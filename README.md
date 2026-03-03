@@ -27,11 +27,24 @@ This project focuses on local containerized data processing.
 ---
 
 ## 2. Architecture Flow
-NYC Taxi CSV
-↓
-Ingestion Script
-↓
-PostgreSQL (Docker Container)
+
+### Data Pipeline Overview
+
+**Step 1 — Source Data**
+- NYC Taxi dataset (CSV format)
+
+**Step 2 — Data Ingestion**
+- Python ingestion script reads raw CSV
+- Transforms data if required
+- Sends data to PostgreSQL
+
+**Step 3 — Data Storage**
+- PostgreSQL running inside Docker container
+- Structured tables for trip records
+
+### Flow Summary
+
+NYC Taxi CSV → Ingestion Script → PostgreSQL (Docker Container)
 
 
 ---
@@ -89,12 +102,13 @@ docker exec -it <container_name> psql -U <user> -d <database>
 Run SQL queries to confirm data is loaded correctly.
 ---
 ## 7. Project Structure
-pipeline/
-│
-├── docker-compose.yaml
-├── ingest_data.py
-├── requirements.txt
-└── README.md
+### Root Directory: `pipeline/`
+
+- `docker-compose.yaml`  
+  Defines PostgreSQL container configuration and service setup.
+
+- `ingest_data.py`  
+  Python script responsible for loading CSV data into PostgreSQL.
 ---
 ## 8. Summary
 This repository demonstrates:
