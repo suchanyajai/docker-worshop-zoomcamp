@@ -29,3 +29,76 @@ The project separates:
 ---
 
 ## 2. Architecture Flow
+
+Terraform is used to define infrastructure resources separately.
+
+---
+
+## 3. Docker Setup
+
+### Purpose
+Create isolated and reproducible environments.
+
+### Components
+- PostgreSQL container
+- Ingestion script container (if applicable)
+- Docker Compose for service orchestration
+
+### Key Concepts
+- Images and containers
+- Port mapping
+- Volume mounting for data persistence
+- Environment variables
+
+---
+
+## 4. PostgreSQL & SQL
+
+### Database Responsibilities
+- Store structured taxi trip data
+- Define table schemas
+- Support analytical queries
+
+### Data Includes
+- Pickup & dropoff timestamps
+- Passenger count
+- Trip distance
+- Fare amount
+- Location IDs
+
+### SQL Usage
+- Table creation
+- Data insertion
+- Data validation queries
+
+---
+
+## 5. Data Ingestion Pipeline
+
+### Step-by-step Process
+
+1. Download NYC Taxi dataset (CSV format)
+2. Start services using Docker Compose
+3. Run ingestion script
+4. Load data into PostgreSQL
+5. Query the database to validate results
+
+---
+
+## 6. Terraform
+
+### Purpose
+Define infrastructure using code.
+
+### Concepts Used
+- Providers
+- Resources
+- Variables
+- State management
+
+### Basic Commands
+
+```bash
+terraform init
+terraform plan
+terraform apply
