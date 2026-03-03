@@ -1,104 +1,107 @@
-# Data Pipeline – Docker Workshop Zoomcamp
+# Docker Workshop Zoomcamp – Data Pipeline Project
+## NYC Taxi Data Pipeline
 
-This project demonstrates a simple end-to-end data pipeline using:
+This project demonstrates a simple data pipeline using:
 
-- Docker containers
+- Docker
 - PostgreSQL
 - SQL
-- Terraform
 - NYC Taxi dataset
 
-The focus is on building a reproducible local data pipeline and managing infrastructure using Infrastructure as Code.
+The objective is to ingest raw CSV data into a PostgreSQL database running inside Docker and validate the data using SQL queries.
 
 ---
 
 ## 1. Project Overview
 
-The workflow consists of:
+The workflow:
 
-1. Running PostgreSQL inside Docker
-2. Ingesting NYC Taxi CSV data into the database
-3. Managing infrastructure configuration using Terraform
-4. Querying and validating data using SQL
+1. Run PostgreSQL inside a Docker container
+2. Download NYC Taxi CSV data
+3. Execute ingestion script
+4. Load data into PostgreSQL
+5. Validate data using SQL
 
-The project separates:
-- Application layer (data ingestion)
-- Database layer (Postgres)
-- Infrastructure layer (Terraform)
+This project focuses on local containerized data processing.
 
 ---
 
 ## 2. Architecture Flow
+NYC Taxi CSV
+↓
+Ingestion Script
+↓
+PostgreSQL (Docker Container)
 
-Terraform is used to define infrastructure resources separately.
 
 ---
 
 ## 3. Docker Setup
 
 ### Purpose
-Create isolated and reproducible environments.
+Provide a reproducible environment for running PostgreSQL.
 
 ### Components
 - PostgreSQL container
-- Ingestion script container (if applicable)
-- Docker Compose for service orchestration
+- Docker Compose for orchestration
+- Volume mapping for persistent storage
+- Port mapping for database access
 
-### Key Concepts
-- Images and containers
-- Port mapping
-- Volume mounting for data persistence
-- Environment variables
+### Run Docker Services
 
+```bash
+docker-compose up
+```
 ---
+## 4. PostgreSQL Database
 
-## 4. PostgreSQL & SQL
+### Responsibilities
+- Store structured taxi trip records
+- Define table schema
+- Support SQL-based validation
 
-### Database Responsibilities
-- Store structured taxi trip data
-- Define table schemas
-- Support analytical queries
-
-### Data Includes
-- Pickup & dropoff timestamps
+### Example Data Fields
+- Pickup datetime
+- Dropoff datetime
 - Passenger count
 - Trip distance
 - Fare amount
 - Location IDs
 
-### SQL Usage
-- Table creation
-- Data insertion
-- Data validation queries
-
 ---
+## 5. Data Ingestion Process
 
-## 5. Data Ingestion Pipeline
+### Steps
 
-### Step-by-step Process
-
-1. Download NYC Taxi dataset (CSV format)
-2. Start services using Docker Compose
-3. Run ingestion script
-4. Load data into PostgreSQL
-5. Query the database to validate results
-
----
-
-## 6. Terraform
-
-### Purpose
-Define infrastructure using code.
-
-### Concepts Used
-- Providers
-- Resources
-- Variables
-- State management
-
-### Basic Commands
+1. Download NYC Taxi dataset (CSV)
+2. Start PostgreSQL using Docker
+3. Run ingestion script:
 
 ```bash
-terraform init
-terraform plan
-terraform apply
+python ingest_data.py
+```
+---
+## 6. Connect to PostgreSQL
+Access the running container:
+```bash
+docker exec -it <container_name> psql -U <user> -d <database>
+```
+Run SQL queries to confirm data is loaded correctly.
+---
+## 7. Project Structure
+pipeline/
+│
+├── docker-compose.yaml
+├── ingest_data.py
+├── requirements.txt
+└── README.md
+---
+## 8. Summary
+This repository demonstrates:
+- Running PostgreSQL inside Docker
+- Ingesting structured CSV data
+- Managing database schema
+- Validating data using SQL
+- Building a reproducible local data pipeline
+---
+Thank You
