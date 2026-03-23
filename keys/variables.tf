@@ -3,6 +3,11 @@ variable "credentials" {
   default     = "/workspaces/docker-worshop-zoomcamp/keys/my-creds.json"
 }
 
+variable "zone" {
+  description = "zone"
+  default     = "us-central1-a"
+}
+
 variable "project" {
   description = "Project"
   default     = "ny-rides-suchanya"
