@@ -8,13 +8,14 @@ terraform {
 }
 
 provider "google" {
-  project = "ny-rides-suchanya"
-  region  = "us-central1"
+  credentials = file(var.credentials)
+  project     = var.project
+  region      = var.region
 }
 
 resource "google_storage_bucket" "storage-bucket" {
-  name          = "ny-rides-suchanya-terra-bucket"
-  location      = "US"
+  name          = var.gcs_bucket_name
+  location      = var.location
   force_destroy = true
 
 
@@ -26,4 +27,9 @@ resource "google_storage_bucket" "storage-bucket" {
       type = "AbortIncompleteMultipartUpload"
     }
   }
+}
+
+resource "google_bigquery_dataset" "ny-taxi-demo-dataset" {
+  dataset_id = var.bq_dataset_name
+  location   = var.location
 }
