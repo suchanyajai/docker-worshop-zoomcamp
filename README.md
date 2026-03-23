@@ -12,18 +12,33 @@ The objective is to ingest raw CSV data into a PostgreSQL database running insid
 
 ---
 
-## 1. Project Overview
+## 1. Project Structure (Full)
+```bash
+.
+├── pipeline/
+│   ├── docker-compose.yaml        # Define PostgreSQL service
+│   └── ingest_data.py             # Ingest CSV data into PostgreSQL
+│
+├── keys/
+│   ├── main.tf                    # Terraform resources (GCS, BigQuery)
+│   ├── variables.tf               # Input variables (project, region, names)
+│   └── terraform.tfstate*         # Terraform state files (ignored in Git)
+│
+├── .gitignore                     # Exclude env, state, cache files
+└── README.md                      # Project documentation
+```
+### Explanation
+```bash
+pipeline/
+```
+- Local data pipeline (Docker + PostgreSQL)
+- Handles ingestion and SQL validation
 
-The workflow:
-
-1. Run PostgreSQL inside a Docker container
-2. Download NYC Taxi CSV data
-3. Execute ingestion script
-4. Load data into PostgreSQL
-5. Validate data using SQL
-
-This project focuses on local containerized data processing.
-
+```bash
+keys/
+```
+- Terraform configuration for GCP
+- Manages infrastructure (GCS + BigQuery)
 ---
 
 ## 2. Architecture Flow
@@ -38,14 +53,29 @@ This project focuses on local containerized data processing.
 - Transforms data if required
 - Sends data to PostgreSQL
 
-**Step 3 — Data Storage**
+
+**Step 3 — Data Storage(Local)**
 - PostgreSQL running inside Docker container
 - Structured tables for trip records
 
+**Step 4 — Cloud Infrastructure**
+- Terraform provisions GCP resources
+- GCS Bucket for storage
+- BigQuery Dataset for analytics
+
 ### Flow Summary
 
-NYC Taxi CSV → Ingestion Script → PostgreSQL (Docker Container)
-
+```bash
+NYC Taxi Data
+      ↓
+Python Ingestion Script
+      ↓
+PostgreSQL (Docker)
+      ↓
+GCP Infrastructure (Terraform)
+      ↓
+GCS / BigQuery
+```
 
 ---
 
@@ -101,7 +131,7 @@ docker exec -it <container_name> psql -U <user> -d <database>
 ```
 Run SQL queries to confirm data is loaded correctly.
 ---
-## 7. Project Structure
+## 7. Directory
 ### Root Directory: `pipeline/`
 
 - `docker-compose.yaml`  
@@ -109,13 +139,71 @@ Run SQL queries to confirm data is loaded correctly.
 
 - `ingest_data.py`  
   Python script responsible for loading CSV data into PostgreSQL.
+
 ---
-## 8. Summary
-This repository demonstrates:
-- Running PostgreSQL inside Docker
-- Ingesting structured CSV data
-- Managing database schema
-- Validating data using SQL
-- Building a reproducible local data pipeline
+## 8. Cloud Infrastructure with Terraform (GCP)
+### Objective
+- Provision infrastructure using Terraform
+- Use secure authentication (no JSON key)
+- Extend pipeline from local → cloud
+### Resources Created
+- GCS Bucket (data storage)
+- BigQuery Dataset (analytics layer)
+### Terraform Commands
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+### Cleanup 
+```bash
+terraform destroy
+```
+### Authentication
+- Uses Application Default Credentials (ADC)
+```bash
+gcloud auth application-default login
+```
+- Uses Service Account Impersonation
+- No credential file stored in repo
 ---
-Thank You
+## 9. Pipeline Integration
+### Local Layer
+- Docker + PostgreSQL
+- CSV ingestion
+- SQL validation
+### Cloud Layer
+- Terraform (GCP resources)
+- GCS + BigQuery
+### Flow 
+```bash
+CSV → Python → PostgreSQL (Docker) → GCP (GCS / BigQuery)
+```
+---
+## 10. Summary
+- Running PostgreSQL inside Docker (containerized environment)
+- Ingesting NYC Taxi data (CSV/Parquet) using Python
+- Performing data validation with SQL queries
+- Designing a reproducible local data pipeline
+- Provisioning cloud infrastructure using Terraform (GCP)
+- Creating GCS Bucket and BigQuery Dataset
+- Applying secure authentication via Service Account Impersonation
+- Demonstrating end-to-end workflow: local processing → cloud setup
+---
+## 11. Key Learnings
+- Docker + database setup
+- SQL data validation
+- Terraform workflow
+- GCP IAM & authentication
+- Infrastructure as Code
+---
+## 12. Notes
+- Resources are temporary → run terraform destroy after use
+- .gitignore is used to exclude:
+```bash
+.venv/
+.terraform/
+*.tfstate
+```
+---
+Thank you 
