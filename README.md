@@ -64,22 +64,8 @@ keys/
 
 ### Flow Summary
 
-```mermaid
-flowchart LR
-    subgraph Local Environment
-        A[NYC Taxi CSV] --> B[Python Ingestion]
-        B --> C[PostgreSQL Docker]
-        C --> D[SQL Validation]
-    end
+<img width="1062" height="334" alt="image" src="https://github.com/user-attachments/assets/2cb57a5b-b356-453b-bdc0-3425c65dc1db" />
 
-    subgraph Cloud (GCP)
-        E[GCS Bucket]
-        F[BigQuery Dataset]
-    end
-
-    C --> E
-    E --> F
-```
 ---
 
 ## 3. Docker Setup
