@@ -53,7 +53,6 @@ keys/
 - Transforms data if required
 - Sends data to PostgreSQL
 
-
 **Step 3 — Data Storage(Local)**
 - PostgreSQL running inside Docker container
 - Structured tables for trip records
@@ -65,17 +64,21 @@ keys/
 
 ### Flow Summary
 
-```bash
-NYC Taxi Data
-      ↓
-Python Ingestion Script
-      ↓
-PostgreSQL (Docker)
-      ↓
-GCP Infrastructure (Terraform)
-      ↓
-GCS / BigQuery
-```
+```mermaid
+flowchart LR
+    subgraph Local Environment
+        A[NYC Taxi CSV] --> B[Python Ingestion]
+        B --> C[PostgreSQL Docker]
+        C --> D[SQL Validation]
+    end
+
+    subgraph Cloud (GCP)
+        E[GCS Bucket]
+        F[BigQuery Dataset]
+    end
+
+    C --> E
+    E --> F
 
 ---
 
@@ -206,4 +209,84 @@ CSV → Python → PostgreSQL (Docker) → GCP (GCS / BigQuery)
 *.tfstate
 ```
 ---
-Thank you 
+# How to Run
+## 1. Requirements
+- Docker & Docker Compose
+- Python 3.9+
+- Google Cloud SDK (gcloud)
+- Terraform
+---
+## 2. Setup Environment
+```bash
+git clone <your-repo-url>
+cd <repo-name>
+```
+--
+## 3. Start PostgreSQL (Docker)
+### Start PostgreSQL
+```bash
+cd pipeline
+docker-compose up -d
+```
+---
+## 4. Ingest Data
+```bash
+uv run python ingest_data.py \
+  --pg-user=root \
+  --pg-pass=root \
+  --pg-host=localhost \
+  --pg-port=5432 \
+  --pg-db=ny_taxi \
+  --target-table=yellow_taxi_trips
+```
+---
+## 5. Validate Data
+```bash
+docker exec -it <container_name> psql -U postgres -d ny_taxi
+```
+Example queries:
+```bash
+SELECT COUNT(*) FROM trips;
+SELECT
+    CAST(tpep_dropoff_datetime AS DATE) AS "day",
+    COUNT(1) AS "count"
+FROM
+    yellow_taxi_trips
+GROUP BY
+    CAST(tpep_dropoff_datetime AS DATE)
+ORDER BY
+    "count" DESC
+LIMIT 100;
+```
+---
+## 6. Setup GCP Authentication
+```bash
+gcloud auth application-default login
+```
+---
+## 7. Run Terraform
+```bash
+cd keys
+terraform init
+terraform plan
+terraform apply
+```
+---
+## 8. Load to BigQuery
+```bash
+bq load \
+  --source_format=CSV \
+  dataset.table \
+  data.csv
+```
+---
+## 9. Shutdown / Cleanup
+```bash
+docker-compose down
+```
+Destroy cloud resources:
+```bash
+terraform destroy
+```
+---
+Thank You
