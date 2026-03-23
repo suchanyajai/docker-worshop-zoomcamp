@@ -79,7 +79,7 @@ flowchart LR
 
     C --> E
     E --> F
-
+```
 ---
 
 ## 3. Docker Setup
