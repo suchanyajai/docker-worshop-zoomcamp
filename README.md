@@ -207,7 +207,7 @@ CSV → Python → PostgreSQL (Docker) → GCP (GCS / BigQuery)
 git clone <your-repo-url>
 cd <repo-name>
 ```
---
+---
 ## 3. Start PostgreSQL (Docker)
 ### Start PostgreSQL
 ```bash
